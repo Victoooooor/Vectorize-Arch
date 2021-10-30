@@ -11,7 +11,6 @@ def draw_triangles(file_name: str, triangles: List[Tuple[Pair, Pair, Pair]]) -> 
         ctx.set_line_width(1)
         for triangle in triangles:
             _draw_triangle(ctx, triangle)
-        ctx.stroke()
 
 
 def _draw_triangle(ctx: cairo.Context, triangle_points: Tuple[Pair, Pair, Pair]) -> None:
@@ -27,9 +26,13 @@ def _draw_triangle(ctx: cairo.Context, triangle_points: Tuple[Pair, Pair, Pair])
     ctx.line_to(x2, y2)
     ctx.line_to(x3, y3)
     ctx.close_path()
+    ctx.stroke()
 
 
 if __name__ == '__main__':
     file_name = 'example.svg'
-    triangle_points = ((240, 40), (240, 160), (350, 160))
-    draw_triangles(file_name, [triangle_points])
+    triangles = [
+        ((240, 40), (240, 160), (350, 160)),
+        ((100, 20), (100, 50), (50, 50)),
+    ]
+    draw_triangles(file_name, triangles)
