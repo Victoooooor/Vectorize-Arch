@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import argparse
 import cv2
 
@@ -5,94 +7,70 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def importance(x, gamma):
+def importance(x, gamma: float):
     pix_max = x.max()
     power = 1 / gamma
     imp = (x / pix_max) ** power
     return imp * 255
 
 
-def minmax(v):
-    if v > 255:
-        v = 255
-    if v < 0:
-        v = 0
-    return v
+def threshold_pixel(pixel: int) -> int:
+    """Threshold a pixel value to be in the range [0, 255]."""
+    if pixel > 255:
+        pixel = 255
+    elif pixel < 0:
+        pixel = 0
+    return pixel
 
 
-def dithering_color(inMat, samplingF):
-    # https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering
-    # https://www.youtube.com/watch?v=0L2n8Tg2FwI&t=0s&list=WL&index=151
-    # input is supposed as color
-    # grab the image dimensions
-    h = inMat.shape[0]
-    w = inMat.shape[1]
+def dither_image(image, sampling_f):
+    """Perform Floyd-Steinberg dithering.
+    Based on:
+    https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering
+    https://www.youtube.com/watch?v=0L2n8Tg2FwI&t=0s&list=WL&index=151
+
+    Keyword arguments:
+        image -- a matrix representing an RGB single image
+        sampling_f -- 
+    """
+    # Get the image dimensions
+    h = image.shape[0]
+    w = image.shape[1]
 
     # Loop over the image
     for y in range(0, h - 1):
         for x in range(1, w - 1):
-            # Threshold the pixel
-            old_b = inMat[y, x, 0]
-            old_g = inMat[y, x, 1]
-            old_r = inMat[y, x, 2]
+            for channel in range(0, 3):
+                # Update the current pixel
+                old_pixel = image[y, x, channel]
+                new_pixel = np.round(sampling_f * old_pixel / 255.0) * (255 / sampling_f)
+                image[y, x, channel] = new_pixel
+                quant_error = old_pixel - new_pixel
 
-            new_b = np.round(samplingF * old_b / 255.0) * (255 / samplingF)
-            new_g = np.round(samplingF * old_g / 255.0) * (255 / samplingF)
-            new_r = np.round(samplingF * old_r / 255.0) * (255 / samplingF)
+                # Perform error diffusion
+                image[y, x + 1, channel] = threshold_pixel(image[y, x + 1, channel] + quant_error * 7 / 16.0)
+                image[y + 1, x - 1, channel] = threshold_pixel(image[y + 1, x - 1, channel] + quant_error * 3 / 16.0)
+                image[y + 1, x, channel] = threshold_pixel(image[y + 1, x, channel] + quant_error * 5 / 16.0)
+                image[y + 1, x + 1, channel] = threshold_pixel(image[y + 1, x + 1, channel] + quant_error * 1 / 16.0)
 
-            inMat[y, x, 0] = new_b
-            inMat[y, x, 1] = new_g
-            inMat[y, x, 2] = new_r
-
-            quant_error_b = old_b - new_b
-            quant_error_g = old_g - new_g
-            quant_error_r = old_r - new_r
-
-            inMat[y, x + 1, 0] = minmax(inMat[y, x + 1, 0] + quant_error_b * 7 / 16.0)
-            inMat[y, x + 1, 1] = minmax(inMat[y, x + 1, 1] + quant_error_g * 7 / 16.0)
-            inMat[y, x + 1, 2] = minmax(inMat[y, x + 1, 2] + quant_error_r * 7 / 16.0)
-
-            inMat[y + 1, x - 1, 0] = minmax(inMat[y + 1, x - 1, 0] + quant_error_b * 3 / 16.0)
-            inMat[y + 1, x - 1, 1] = minmax(inMat[y + 1, x - 1, 1] + quant_error_g * 3 / 16.0)
-            inMat[y + 1, x - 1, 2] = minmax(inMat[y + 1, x - 1, 2] + quant_error_r * 3 / 16.0)
-
-            inMat[y + 1, x, 0] = minmax(inMat[y + 1, x, 0] + quant_error_b * 5 / 16.0)
-            inMat[y + 1, x, 1] = minmax(inMat[y + 1, x, 1] + quant_error_g * 5 / 16.0)
-            inMat[y + 1, x, 2] = minmax(inMat[y + 1, x, 2] + quant_error_r * 5 / 16.0)
-
-            inMat[y + 1, x + 1, 0] = minmax(inMat[y + 1, x + 1, 0] + quant_error_b * 1 / 16.0)
-            inMat[y + 1, x + 1, 1] = minmax(inMat[y + 1, x + 1, 1] + quant_error_g * 1 / 16.0)
-            inMat[y + 1, x + 1, 2] = minmax(inMat[y + 1, x + 1, 2] + quant_error_r * 1 / 16.0)
-
-            #   quant_error  := oldpixel - newpixel
-            #   pixel[x + 1][y    ] := pixel[x + 1][y    ] + quant_error * 7 / 16
-            #   pixel[x - 1][y + 1] := pixel[x - 1][y + 1] + quant_error * 3 / 16
-            #   pixel[x    ][y + 1] := pixel[x    ][y + 1] + quant_error * 5 / 16
-            #   pixel[x + 1][y + 1] := pixel[x + 1][y + 1] + quant_error * 1 / 16
-
-    # Return the thresholded image
-    return inMat
+    return image
 
 
-def rect_contains(rect, point):
+def rect_contains(rect: Tuple[int, int, int, int], point: Tuple[int, int]) -> bool:
     """Check if the provided point is inside the provided rectangle."""
-    if point[0] < rect[0]:
+    if point[0] < rect[0] or point[0] > rect[2]:
         return False
-    elif point[1] < rect[1]:
-        return False
-    elif point[0] > rect[2]:
-        return False
-    elif point[1] > rect[3]:
+    elif point[1] < rect[1] or point[1] > rect[3]:
         return False
     return True
 
 
-def draw_point(img, p, color):
-    """# Draw a point."""
+def draw_point(img, p, color) -> None:
+    """Draw a point."""
     cv2.circle(img, p, 2, color, cv2.cv.CV_FILLED, cv2.CV_AA, 0)
 
 
-def draw_delaunay(img, subdiv, delaunay_color):
+def draw_delaunay(img, subdiv, delaunay_color) -> None:
     """Draw delaunay triangles."""
     triangleList = subdiv.getTriangleList()
     size = img.shape
@@ -119,6 +97,7 @@ if __name__ == '__main__':
     image = cv2.imread(args["image"])
     h, w, c = image.shape
 
+    # 'Improved' Sobel filters
     k1 = np.array([
         [-1, -2, -1],
         [0, 0, 0],
@@ -144,11 +123,12 @@ if __name__ == '__main__':
     imfil_3 = np.absolute(cv2.filter2D(image, -1, k3))
     imfil_4 = np.absolute(cv2.filter2D(image, -1, k4))
 
-    max_val = cv2.max(imfil_1, imfil_2)
-    max_val = cv2.max(max_val, imfil_3)
-    max_val = cv2.max(max_val, imfil_4)
+    # Get the pixel-wise max value
+    image_max = cv2.max(imfil_1, imfil_2)
+    image_max = cv2.max(image_max, imfil_3)
+    image_max = cv2.max(image_max, imfil_4)
 
-    imp = importance(max_val, 0.01)
+    imp = importance(image_max, 0.01)
     # 0.5
 
     # saliency = cv2.saliency.StaticSaliencyFineGrained_create()
@@ -158,7 +138,7 @@ if __name__ == '__main__':
 
     # cv2.imshow("Importance", imp)
 
-    outMat_color = dithering_color(imp, 1)
+    outMat_color = dither_image(imp, 1)
     cv2.imshow('diffused', outMat_color)
     sampledpoint = (np.sum(outMat_color, axis=2) < 127) * 255
 
