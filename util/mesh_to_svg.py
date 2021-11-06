@@ -6,11 +6,22 @@ Pair = Tuple[int, int]
 
 class SVGWriter():
     def __init__(self, img_size: int, line_width: int) -> None:
+        """
+        Keyword arguments:
+            img_size -- the height and width dimension of the canvas (img_size by img_size)
+            line_width -- the line width used for the vector graphics
+        """
         self.img_size = img_size
         self.line_width = line_width
 
 
     def draw_triangles(self, file_name: str, triangles: List[Tuple[Pair, Pair, Pair]]) -> None:
+        """Draw the provided list of triangles into an SVG file.
+
+        Keyword arguments:
+            file_name -- the file name to save the triangles to
+            triangles -- a list of tuples representing the triangles, where each coordinate is represented by a tuple of (x, y)
+        """
         with cairo.SVGSurface(file_name, self.img_size, self.img_size) as surface:
             ctx = cairo.Context(surface)
             ctx.set_line_width(self.line_width)
@@ -19,6 +30,7 @@ class SVGWriter():
 
 
     def _draw_triangle(self, ctx: cairo.Context, triangle_points: Tuple[Pair, Pair, Pair]) -> None:
+        """Draw a single triangle using the provided Context."""
         # Extract points
         point1, point2, point3 = triangle_points
         x1, y1 = point1
