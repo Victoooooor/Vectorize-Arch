@@ -31,8 +31,9 @@
 *.out
 *.app
 
-# VS Code
+# IDEs
 .vscode
+.idea/
 
 # Build outputs
 build/
