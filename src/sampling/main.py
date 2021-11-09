@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def importance(x, gamma: float):
+def importance(x: np.ndarray, gamma: float) -> np.ndarray:
     pix_max = x.max()
     power = 1 / gamma
     imp = (x / pix_max) ** power
@@ -23,7 +23,7 @@ def threshold_pixel(pixel: int) -> int:
     return pixel
 
 
-def dither_image(image, sampling_f):
+def dither_image(image: np.ndarray, sampling_f: float) -> np.ndarray:
     """Perform Floyd-Steinberg dithering.
     Based on:
     https://en.wikipedia.org/wiki/Floyd–Steinberg_dithering
