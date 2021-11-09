@@ -31,4 +31,14 @@
 *.out
 *.app
 
+# VS Code
 .vscode
+
+# Build outputs
+build/
+
+# Temp files
+*~
+
+# Venv
+venv/
