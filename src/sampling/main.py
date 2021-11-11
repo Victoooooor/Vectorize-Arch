@@ -1,5 +1,6 @@
 from typing import Tuple
 
+import time
 import argparse
 import cv2
 
@@ -65,15 +66,16 @@ def rect_contains(rect: Tuple[int, int, int, int], point: Tuple[int, int]) -> bo
     return True
 
 
-def draw_point(img, p, color) -> None:
-    """Draw a point."""
-    cv2.circle(img, p, 2, color, cv2.cv.CV_FILLED, cv2.CV_AA, 0)
+def draw_delaunay(image: np.ndarray, subdiv: cv2.Subdiv2D, color: Tuple[int, int, int]) -> None:
+    """Draw delaunay triangles.
 
-
-def draw_delaunay(img, subdiv, delaunay_color) -> None:
-    """Draw delaunay triangles."""
+    Keyword arguments:
+        image --
+        subdiv --
+        color -- a tuple representing the RGB values of the desired color
+    """
     triangleList = subdiv.getTriangleList()
-    size = img.shape
+    size = image.shape
     r = (0, 0, size[1], size[0])
 
     for t in triangleList:
@@ -82,12 +84,15 @@ def draw_delaunay(img, subdiv, delaunay_color) -> None:
         pt3 = (int(t[4]), int(t[5]))
 
         if rect_contains(r, pt1) and rect_contains(r, pt2) and rect_contains(r, pt3):
-            cv2.line(img, pt1, pt2, delaunay_color, 1, cv2.LINE_AA, 0)
-            cv2.line(img, pt2, pt3, delaunay_color, 1, cv2.LINE_AA, 0)
-            cv2.line(img, pt3, pt1, delaunay_color, 1, cv2.LINE_AA, 0)
+            cv2.line(image, pt1, pt2, color, 1, cv2.LINE_AA, 0)
+            cv2.line(image, pt2, pt3, color, 1, cv2.LINE_AA, 0)
+            cv2.line(image, pt3, pt1, color, 1, cv2.LINE_AA, 0)
 
 
 if __name__ == '__main__':
+    # Measure running time
+    start_time = time.time()
+
     # Construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-i", "--image", required=True, help="path to input image")
@@ -140,15 +145,15 @@ if __name__ == '__main__':
 
     outMat_color = dither_image(imp, 1)
     cv2.imshow('diffused', outMat_color)
-    sampledpoint = (np.sum(outMat_color, axis=2) < 127) * 255
+    sampled_point = (np.sum(outMat_color, axis=2) < 127) * 255
 
     points = []
     for i in range(h):
         for j in range(w):
-            if sampledpoint[i][j] != 255:
+            if sampled_point[i][j] != 255:
                 points.append((j, i))
     print(len(points))
-    print(sampledpoint.shape)
+    print(sampled_point.shape)
     print(h, w)
 
     # cv2.imshow('points', sampledpoint)
@@ -161,10 +166,12 @@ if __name__ == '__main__':
     for x in points:
         subdiv.insert(x)
 
-    triangle = subdiv.getTriangleList()
-
     draw_delaunay(outMat_color, subdiv, (255, 255, 255))
 
+    # Display running time
+    end_time = time.time()
+    print("Time taken:", end_time-start_time)
+
     cv2.imshow('triangle', outMat_color)
-    plt.imshow(sampledpoint, cmap='gray')
+    plt.imshow(sampled_point, cmap='gray')
     plt.show()
