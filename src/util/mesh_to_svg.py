@@ -14,20 +14,18 @@ class SVGWriter():
         self.img_size = img_size
         self.line_width = line_width
 
-
-    def draw_triangles(self, file_name: str, triangles: List[Tuple[Pair, Pair, Pair]]) -> None:
+    def draw_triangles(self, filename: str, triangles: List[Tuple[Pair, Pair, Pair]]) -> None:
         """Draw the provided list of triangles into an SVG file.
 
         Keyword arguments:
-            file_name -- the file name to save the triangles to
+            filename -- the filename to save the triangles to
             triangles -- a list of tuples representing the triangles, where each coordinate is represented by a tuple of (x, y)
         """
-        with cairo.SVGSurface(file_name, self.img_size, self.img_size) as surface:
+        with cairo.SVGSurface(filename, self.img_size, self.img_size) as surface:
             ctx = cairo.Context(surface)
             ctx.set_line_width(self.line_width)
             for triangle in triangles:
                 self._draw_triangle(ctx, triangle)
-
 
     def _draw_triangle(self, ctx: cairo.Context, triangle_points: Tuple[Pair, Pair, Pair]) -> None:
         """Draw a single triangle using the provided Context."""
@@ -51,9 +49,9 @@ if __name__ == '__main__':
     line_width = 1
     converter = SVGWriter(img_size, line_width)
 
-    file_name = 'example.svg'
+    filename = 'example.svg'
     triangles = [
         ((240, 40), (240, 160), (350, 160)),
         ((100, 20), (100, 50), (50, 50)),
     ]
-    converter.draw_triangles(file_name, triangles)
+    converter.draw_triangles(filename, triangles)
