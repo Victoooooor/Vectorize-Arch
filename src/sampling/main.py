@@ -74,11 +74,11 @@ def draw_delaunay(image: np.ndarray, subdiv: cv2.Subdiv2D, color: Tuple[int, int
         subdiv --
         color -- a tuple representing the RGB values of the desired color
     """
-    triangleList = subdiv.getTriangleList()
+    triangle_list = subdiv.getTriangleList()
     size = image.shape
     r = (0, 0, size[1], size[0])
 
-    for t in triangleList:
+    for t in triangle_list:
         pt1 = (int(t[0]), int(t[1]))
         pt2 = (int(t[2]), int(t[3]))
         pt3 = (int(t[4]), int(t[5]))
