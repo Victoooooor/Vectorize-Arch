@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 
 def importance(x: np.ndarray, gamma: float) -> np.ndarray:
-    pix_max = x.max()
+    pix_max = np.amax(x)
     power = 1 / gamma
     imp = (x / pix_max) ** power
     return imp * 255
