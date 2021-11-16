@@ -5,9 +5,11 @@ class Evaluator:
     def __init__(self):
         model = tf.keras.applications.VGG19()
 
+        print(model.summary())
+
         # Strip layers off of the model
         # We are only interested in feature maps, not the actual output
-        self.model = tf.keras.Model(inputs=model.input, outputs=model.layers[-6].output)
+        self.model = tf.keras.Model(inputs=model.input, outputs=model.layers[-11].output)
 
         # Get the TensorShape of the input layer and convert it to a Tensor
         # We drop the first element of the list because it is None
@@ -17,8 +19,8 @@ class Evaluator:
 
     def preprocess_input(self, image: tf.Tensor) -> tf.Tensor:
         """Preprocess the image for input to the model."""
-        image = tf.keras.applications.vgg19.preprocess_input(image)
         image = tf.image.resize(image, self.input_shape)
+        image = tf.keras.applications.vgg19.preprocess_input(image)
         return tf.expand_dims(image, axis=0)
 
     def get_content_loss(self, image_1: tf.Tensor, image_2: tf.Tensor) -> float:
@@ -40,9 +42,16 @@ if __name__ == '__main__':
     # Read the files
     import os
     cwd = os.getcwd()
-    img_1 = read_image_file(cwd + "/../../img/test4.jpg")
-    img_2 = read_image_file(cwd + "/../../img/test5.jpg")
+    img_1 = read_image_file(cwd + "/../../img/lab1.jpg")
+    img_2 = read_image_file(cwd + "/../../img/lab2.jpg")
+    img_3 = read_image_file(cwd + "/../../img/lab3.jpg")
 
     # Get the loss
+    loss = evaluator.get_content_loss(img_1, img_3)
+    print('Loss:', loss)
+    
     loss = evaluator.get_content_loss(img_1, img_2)
+    print('Loss:', loss)
+    
+    loss = evaluator.get_content_loss(img_2, img_3)
     print('Loss:', loss)
