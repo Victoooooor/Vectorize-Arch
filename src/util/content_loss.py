@@ -5,8 +5,6 @@ class Evaluator:
     def __init__(self):
         model = tf.keras.applications.VGG19()
 
-        print(model.summary())
-
         # Strip layers off of the model
         # We are only interested in feature maps, not the actual output
         self.model = tf.keras.Model(inputs=model.input, outputs=model.layers[-11].output)
