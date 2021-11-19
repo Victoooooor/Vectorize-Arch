@@ -26,7 +26,7 @@ $ make run_edge ARGS="img/emoji.png img/out.png"
 
 ##### Blue noise sampling
 ```bash
-(venv) $ python src/sampling/main.py -i img/test.jpg
+(venv) $ python src/sampling/sample.py -i img/test.jpg
 ```
 
 ##### Output to SVG
