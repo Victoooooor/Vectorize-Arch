@@ -114,6 +114,7 @@ class Sampler:
     def display_dithered_image(self, dithered_image: np.ndarray) -> None:
         cv2.imshow('Diffused', dithered_image)
 
+        # why???
         sampled_point = (np.sum(dithered_image, axis=2) < 127) * 255
 
         h, w = sampled_point.shape
@@ -147,7 +148,8 @@ class Sampler:
 
         imp = self._get_importance(image_max, 0.01)
 
-        return self._dither_image(imp, 1)
+        return imp
+        # return self._dither_image(imp, 1)
 
 
 if __name__ == '__main__':
@@ -167,9 +169,11 @@ if __name__ == '__main__':
     sampler = Sampler()
     dithered_image = sampler.sample_image(image)
 
-    print("Displaying results...")
-    sampler.display_dithered_image(dithered_image)
+    cv2.imwrite("img/out2.jpg", dithered_image)
 
-    # Display running time
-    end_time = time.time()
-    print("Time taken:", end_time - start_time)
+    # print("Displaying results...")
+    # sampler.display_dithered_image(dithered_image)
+
+    # # Display running time
+    # end_time = time.time()
+    # print("Time taken:", end_time - start_time)
