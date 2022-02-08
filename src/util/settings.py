@@ -1,6 +1,6 @@
 import argparse
 
-from util.geometrytypes import Color
+from util.geometry_types import Color
 
 class Settings:
 

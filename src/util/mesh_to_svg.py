@@ -1,7 +1,7 @@
 from typing import List, Tuple
 import cairo
 
-from util.geometrytypes import Triangle, TriangleList
+from util.geometry_types import Triangle, TriangleList
 
 class SVGWriter():
     def __init__(self, w: int, h: int, line_width: int) -> None:
