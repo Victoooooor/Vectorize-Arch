@@ -2,6 +2,7 @@ import cairo
 
 from util.geometry_types import Triangle, TriangleList
 
+
 class SVGWriter():
     def __init__(self, w: int, h: int, line_width: int) -> None:
         """
@@ -29,7 +30,9 @@ class SVGWriter():
     def _draw_triangle(self, ctx: cairo.Context, triangle_points: Triangle) -> None:
         """Draw a single triangle using the provided Context."""
         # Extract points
-        x1, y1, x2, y2, x3, y3 = triangle_points
+        x1, y1, x2, y2, x3, y3, r, g, b = triangle_points
+
+        ctx.set_source_rgb(r/255., g/255., b/255.)
 
         # Draw triangle
         ctx.new_path()
@@ -37,7 +40,7 @@ class SVGWriter():
         ctx.line_to(x2, y2)
         ctx.line_to(x3, y3)
         ctx.close_path()
-        ctx.stroke()
+        ctx.fill()
 
 
 if __name__ == '__main__':

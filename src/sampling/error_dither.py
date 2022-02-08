@@ -4,6 +4,7 @@ import cv2
 
 from util.settings import Settings
 
+
 class ErrorDither:
     """
     Returns a set of points generated from error dithering, which is the second
@@ -37,15 +38,18 @@ class ErrorDither:
                 for channel in range(3):
                     # Update the current pixel
                     old_pixel = img[y, x, channel]
-                    new_pixel = np.round(settings.sampling_f * old_pixel / 255.0) * (255 / settings.sampling_f)
+                    new_pixel = np.round(
+                        settings.sampling_f * old_pixel / 255.0) * (255 / settings.sampling_f)
                     img[y, x, channel] = new_pixel
                     quant_error = old_pixel - new_pixel
 
                     # Perform error diffusion
-                    img[y, x + 1, channel] = self._threshold_pixel(img[y, x + 1, channel] + quant_error * 7 / 16.0)
+                    img[y, x + 1, channel] = self._threshold_pixel(
+                        img[y, x + 1, channel] + quant_error * 7 / 16.0)
                     img[y + 1, x - 1, channel] = self._threshold_pixel(
                         img[y + 1, x - 1, channel] + quant_error * 3 / 16.0)
-                    img[y + 1, x, channel] = self._threshold_pixel(img[y + 1, x, channel] + quant_error * 5 / 16.0)
+                    img[y + 1, x, channel] = self._threshold_pixel(
+                        img[y + 1, x, channel] + quant_error * 5 / 16.0)
                     img[y + 1, x + 1, channel] = self._threshold_pixel(
                         img[y + 1, x + 1, channel] + quant_error * 1 / 16.0)
 
@@ -69,11 +73,11 @@ class ErrorDither:
         """
         Driver for the dithering process.
         """
-        img = self._dither(settings, img)
+        # dithering is not working correctly
+        # img = self._dither(settings, img)
         sampled_points = self._threshold_sample(img)
 
         return sampled_points
-        
 
     def run_and_export(self, settings: Settings, img: np.ndarray) -> List[Tuple[int, int]]:
         """
@@ -81,7 +85,7 @@ class ErrorDither:
         """
         sampled = self.run(settings, img)
 
-        # Plot sampled points 
+        # Plot sampled points
         h = img.shape[0]
         w = img.shape[1]
         img = np.zeros((h, w, 3), np.uint8)

@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 from sampling.error_dither import ErrorDither
 from sampling.importance_map import ImportanceMap
 from sampling.triangulate import Triangulate
