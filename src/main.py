@@ -1,6 +1,6 @@
 import cv2
-from sampling.errordither import ErrorDither
-from sampling.importancemap import ImportanceMap
+from sampling.error_dither import ErrorDither
+from sampling.importance_map import ImportanceMap
 from sampling.triangulate import Triangulate
 from util.mesh_to_svg import SVGWriter
 
