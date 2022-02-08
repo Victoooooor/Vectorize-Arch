@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from typing import List, Tuple
+from typing import Tuple
 
 from util.geometry_types import PointList, TriangleList
 from util.settings import Settings

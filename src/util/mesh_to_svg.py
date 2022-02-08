@@ -1,4 +1,3 @@
-from typing import List, Tuple
 import cairo
 
 from util.geometry_types import Triangle, TriangleList
