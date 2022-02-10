@@ -31,4 +31,18 @@
 *.out
 *.app
 
+# IDEs
 .vscode
+.idea/
+
+# Build outputs
+build/
+
+# Temp files
+*~
+
+# Venv
+venv/
+
+# PyCache
+__pycache__
