@@ -2,6 +2,7 @@ import argparse
 
 from util.geometry_types import Color
 
+
 class Settings:
 
     def __init__(self):

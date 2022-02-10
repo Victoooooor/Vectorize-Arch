@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 from typing import Tuple
-import random
 
 from util.geometry_types import PointList, Triangle, TriangleList
 from util.settings import Settings
