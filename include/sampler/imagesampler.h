@@ -1,6 +1,8 @@
 #ifndef IMAGESAMPLER_H
 #define IMAGESAMPLER_H
 
+#include <vector>
+#include <fstream>
 #include "quasisampler_prototype.h"
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
@@ -24,18 +26,18 @@ struct ChannelException : public std::exception
 };
 class ImageQuasisampler : public Quasisampler {
 private:
-  uint8_t *data;
+  std::vector<unsigned> data;
   int channels, type;
   double mag;
 
 public:
   
   ImageQuasisampler();
-  ImageQuasisampler(PyObject *inputObject, double mag = 1.0);
+  ImageQuasisampler(PyObject *inputObject, double width, double height, double mag = 1.0);
     // virtual ~ImageQuasisampler();
   // Simple PGM parser (Low fault tolerance)
   bool loadImg(PyObject *inputObject, double mag = 1.0);
-
+  bool loadPGM(char* filename, double mag=1.0);
   unsigned getImportanceAt(Point2D pt);
   cv::Mat debugTool();
   cv::Mat getSampledPoints();

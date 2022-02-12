@@ -19,6 +19,7 @@
 #ifndef QUASISAMPLER_PROTOTYPE_H
 #define QUASISAMPLER_PROTOTYPE_H
 
+#include "opencv2/core/core.hpp"
 #include <Python.h>
 #include <cstddef>
 #include <cstring>
@@ -26,9 +27,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-
-#define MIN(x,y) ((x)<(y)?(x):(y))
-#define MAX(x,y) ((x)>(y)?(x):(y))
 
 #define LUT_SIZE 21 // Number of Importance Index entries in the Lookup table.
 #define NUM_STRUCT_INDEX_BITS 6 // Number of significant bits taken from F-Code.
