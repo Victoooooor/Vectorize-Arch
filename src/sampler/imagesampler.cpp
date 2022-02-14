@@ -133,7 +133,7 @@ unsigned ImageQuasisampler::getImportanceAt(Point2D pt) {
     int index = ((h-y)*w + x) + i*range;
     if (index > (this->width * this->height * this->channels)){
         std::cerr<<"outside" <<std::endl;
-        break;
+        continue;
     }
 
     sum += (this->data)[index];

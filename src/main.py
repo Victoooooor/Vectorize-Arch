@@ -27,25 +27,27 @@ if __name__ == "__main__":
     importance_map = im.run(settings, img)
     # print(importance_map)
     print(importance_map.max())
-    plt.imshow(importance_map[:,:,1], cmap='hot', interpolation='nearest')
-    plt.axis('off')
-    plt.savefig("test.png",bbox_inches='tight',
-            pad_inches=0,
-            format='png',
-            dpi=300)
-
+    # plt.imshow(importance_map[:,:,1], cmap='hot', interpolation='nearest')
+    # plt.axis('off')
+    # plt.savefig("test.png",bbox_inches='tight',
+    #         pad_inches=0,
+    #         format='png',
+    #         dpi=300)
+    print(importance_map.shape)
     # Perform Floyd-Steinberg error dithering for blue-noise sampling
     print("Performing error diffusion...")
+    importance_map = np.floor(importance_map)
     bn.loadImg(importance_map, 1000.0)
-    # debug= bn.debugTool()
-    # plt.imshow(debug, cmap='hot', interpolation='nearest')
+
+    debug= bn.debugTool()
+    plt.imshow(debug, cmap='hot', interpolation='nearest')
     # plt.show()
     sampled_points = bn.getSampledPoints()
     print(sampled_points)
     print(sampled_points.shape)
     x = sampled_points[:, 0]
     y = sampled_points[:, 1]
-    plt.scatter(x, y)
+    plt.scatter(y, x, marker='.', s = 1,c='red')
     plt.show()
 
     # Perform Delaunay triangulation
