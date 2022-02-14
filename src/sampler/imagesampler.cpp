@@ -147,11 +147,11 @@ unsigned ImageQuasisampler::getImportanceAt(Point2D pt) {
 
 cv::Mat ImageQuasisampler::debugTool(){
   
-  cv::Mat passing = Mat::zeros((unsigned)this->width,(unsigned)this->height, CV_32S);
+  cv::Mat passing = Mat::zeros((unsigned)this->width,(unsigned)this->height, CV_64F);
   for(int i = 0; i < (int)this->width; i++){
     for(int j = 0; j < (int)this->height; j++){
 
-        passing.at<int>(i,j) +=this->getImportanceAt(Point2D((double)i, (double)j));
+        passing.at<double>(i,j) +=this->getImportanceAt(Point2D((double)i, (double)j));
     }
   }
 

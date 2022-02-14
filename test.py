@@ -28,8 +28,8 @@ import matplotlib.pyplot as plt
 # If there is a memory leak in the conversion, memory used by the program should grow to eventually overwhelm
 # the system; memory usage monitors may be used to check the behavior
 if __name__ == "__main__":
-    image = Image.open('./img/test4.jpg')
-
+    # image = Image.open('./img/test6.jpg')
+    image = Image.open('test.png')
     # convert image to numpy array
     data = np.asarray(image)
     print(data.shape)
@@ -45,9 +45,13 @@ if __name__ == "__main__":
     # w,h,_=data.shape
     # data = data.astype(float)
     data = data.astype(float)
+    print(data.shape)
     # Sampled = BN_Sample.GetPoints(data, 100.0)
     Sampler = BN_Sample.ImageQuasisampler()
-    Sampler.loadImg(data,100.0)
+    Sampler.loadImg(data[:,:,:3],1000.0)
+    debug = Sampler.debugTool()
+    plt.imshow(debug, cmap='hot', interpolation='nearest')
+    plt.show()
     # Sampler.loadPGM('image.pgm', 100.0)
     Sampled = Sampler.getSampledPoints()
     x = Sampled[:,0]

@@ -122,7 +122,8 @@ namespace BN_Sample {
         class_< ImageQuasisampler >("ImageQuasisampler", init<>())
             .def(init<PyObject*, double>())
             .def("loadImg", &ImageQuasisampler::loadImg)
-            .def("getSampledPoints", &ImageQuasisampler::getSampledPoints);
+            .def("getSampledPoints", &ImageQuasisampler::getSampledPoints)
+            .def("debugTool", &ImageQuasisampler::debugTool);
 //         def("dot", dot);
 //         def("dot2", dot2);
 //        def("GetPoints",GetPoints);

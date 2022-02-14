@@ -7,7 +7,8 @@ from util.mesh_to_svg import SVGWriter
 
 from util.settings import Settings
 import matplotlib.pyplot as plt
-
+from PIL import Image
+import numpy as np
 if __name__ == "__main__":
     settings = Settings()
     settings.print()
@@ -24,11 +25,21 @@ if __name__ == "__main__":
     # Perform importance map for blue-noise sampling
     print("Performing importance map...")
     importance_map = im.run(settings, img)
-    print(importance_map)
+    # print(importance_map)
+    print(importance_map.max())
+    plt.imshow(importance_map[:,:,1], cmap='hot', interpolation='nearest')
+    plt.axis('off')
+    plt.savefig("test.png",bbox_inches='tight',
+            pad_inches=0,
+            format='png',
+            dpi=300)
 
     # Perform Floyd-Steinberg error dithering for blue-noise sampling
     print("Performing error diffusion...")
-    bn.loadImg(importance_map, 100.0)
+    bn.loadImg(importance_map, 1000.0)
+    # debug= bn.debugTool()
+    # plt.imshow(debug, cmap='hot', interpolation='nearest')
+    # plt.show()
     sampled_points = bn.getSampledPoints()
     print(sampled_points)
     print(sampled_points.shape)
