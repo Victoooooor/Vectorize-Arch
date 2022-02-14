@@ -1,7 +1,0 @@
-/home/victor/PycharmProjects/ECE-395-SeniorProj/CMakeFiles/BN_Sample.dir
-/home/victor/PycharmProjects/ECE-395-SeniorProj/CMakeFiles/edit_cache.dir
-/home/victor/PycharmProjects/ECE-395-SeniorProj/CMakeFiles/rebuild_cache.dir
-/home/victor/PycharmProjects/ECE-395-SeniorProj/CMakeFiles/list_install_components.dir
-/home/victor/PycharmProjects/ECE-395-SeniorProj/CMakeFiles/install.dir
-/home/victor/PycharmProjects/ECE-395-SeniorProj/CMakeFiles/install/local.dir
-/home/victor/PycharmProjects/ECE-395-SeniorProj/CMakeFiles/install/strip.dir

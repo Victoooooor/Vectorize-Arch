@@ -46,3 +46,8 @@ venv/
 
 # PyCache
 __pycache__
+
+#cmake
+CMakeFiles/
+*Cache*
+*.cmake
