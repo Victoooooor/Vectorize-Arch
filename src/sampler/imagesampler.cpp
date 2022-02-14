@@ -19,7 +19,7 @@ ImageQuasisampler::ImageQuasisampler() {
   this->mag = 1.0;
 }
 
-ImageQuasisampler::ImageQuasisampler(PyObject *inputObject, double width, double height, double mag):Quasisampler(width, height) {
+ImageQuasisampler::ImageQuasisampler(PyObject *inputObject, double mag){
   // Load the Matrix
   if (!loadImg(inputObject, mag)) {
     this->data.clear();
@@ -39,15 +39,15 @@ bool ImageQuasisampler::loadImg(PyObject *inputObject, double mag) {
     throw ChannelException();
     return false;
   }
-  if (returned.type() != 16){
-    std::cout<<"Require uint8"<<std::endl;
-    this->data.clear();
-    this->mag = 1.0;
-    this->width = this->height = this->channels = 0;
-    this->type = -1;
-    throw ChannelException();
-    return false;
-  }
+//  if (returned.type() != 16){
+//    std::cout<<"Require uint8"<<std::endl;
+//    this->data.clear();
+//    this->mag = 1.0;
+//    this->width = this->height = this->channels = 0;
+//    this->type = -1;
+//    throw ChannelException();
+//    return false;
+//  }
 
   this->mag = mag;
   this->width = returned.cols;
@@ -57,23 +57,32 @@ bool ImageQuasisampler::loadImg(PyObject *inputObject, double mag) {
   int data_len =(int)(this->width * this->height * this->channels);
   std::cout<<"data_len: "<<data_len<<std::endl;
   this->data.clear();
-  std::cout<<"data alocated"<<std::endl;
-  int index = 0;
-  for(int row = 0; row < returned.rows; ++row) {
-    uchar* p = returned.ptr(row);
-    for(int col = 0; col < returned.cols*returned.channels(); ++col) {
-         this->data.push_back(*p);
-//         std::cout<<this->data.back()<<" ";
-         p++;  //points to each pixel value in turn assuming a CV_8UC1 greyscale image
-    }
 
+  cv::Mat typed;
+  returned.convertTo(typed, CV_64F);
 
-}
+  std::vector<cv::Mat> three_channels;
+   cv::split(typed, three_channels);
 
-  std::cout<<this->type<<std::endl;
+  for(int i = 0; i < returned.channels(); i++){
+    data.insert(data.end(), three_channels[i].begin<double>(), three_channels[i].end<double>());
+  }
+//  for(int row = 0; row < returned.rows; ++row) {
+//    int* p = typed.ptr(row);
+//    for(int col = 0; col < returned.cols*returned.channels(); ++col) {
+//         this->data.push_back((unsigned)*p);
+////         std::cout<<(double)*p<<" ";
+////         std::cout<<this->data.back()<<" ";
+//         p++;  //points to each pixel value in turn assuming a CV_8UC1 greyscale image
+//    }
+//
+//
+//    }
+
+  std::cout<<"loaded:"<<data.size()<<std::endl;
   return true;
 }
-
+//deprecated
   bool ImageQuasisampler::loadPGM(char* filename, double mag)
   {
     std::cout<<filename<<std::endl;
@@ -118,9 +127,10 @@ unsigned ImageQuasisampler::getImportanceAt(Point2D pt) {
     throw "No Valid Data loaded";
     exit(-1);
   }
-  unsigned sum = 0;
+  int range = this->width* this->height;
+  double sum = 0;
     for(int i = 0; i< this->channels; i++){
-    int index = ((h-y)*w + x) * this->channels + i;
+    int index = ((h-y)*w + x) + i*range;
     if (index > (this->width * this->height * this->channels)){
         std::cerr<<"outside" <<std::endl;
         break;

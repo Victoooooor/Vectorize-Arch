@@ -146,7 +146,7 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
         ARCHIVE_OUTPUT_NAME ${ARCHIVE_OUTPUT_NAME}  # prevent name conflict for python2/3 outputs
-        PREFIX ""
+        PREFIX "./src/sampler/"
         OUTPUT_NAME BN_Sample
         SUFFIX ${${PROJECT_NAME}_PY_SUFFIX})
 

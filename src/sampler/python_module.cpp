@@ -16,8 +16,8 @@ namespace BN_Sample {
  * @param right right-hand matrix operand (NdArray required)
  * @return an NdArray representing the dot-product of the left and right operands
  */
-    cv::Mat GetPoints(PyObject *inputObject, int width, int height, double mag = 1.0){
-        ImageQuasisampler instance(inputObject, (double)width, (double)height, mag);
+    cv::Mat GetPoints(PyObject *inputObject, double mag = 1.0){
+        ImageQuasisampler instance(inputObject,mag);
         return instance.getSampledPoints();
     }
 
@@ -119,10 +119,13 @@ namespace BN_Sample {
 
         register_exception_translator<ChannelException>(translate);
         //expose module-level functions
-//        class_< ImageQuasisampler >("ImageQuasisampler", init<PyObject*, double>());
-        // def("dot", dot);
-        // def("dot2", dot2);
-        def("GetPoints",GetPoints);
+        class_< ImageQuasisampler >("ImageQuasisampler", init<>())
+            .def(init<PyObject*, double>())
+            .def("loadImg", &ImageQuasisampler::loadImg)
+            .def("getSampledPoints", &ImageQuasisampler::getSampledPoints);
+//         def("dot", dot);
+//         def("dot2", dot2);
+//        def("GetPoints",GetPoints);
 		// def("makeCV_16UC3Matrix", makeCV_16UC3Matrix);
         // def("say_hello", say_hello);
 		// //from PEP8 (https://www.python.org/dev/peps/pep-0008/?#prescriptive-naming-conventions)

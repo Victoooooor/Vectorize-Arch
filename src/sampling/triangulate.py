@@ -115,8 +115,12 @@ class Triangulate:
         (x1, y1), (x2, y2), (x3, y3) = sorted_triangle
 
         def get_bottom_flat_triangle_points(x1: int, y1: int, x2: int, y2: int, x3: int, y3: int) -> PointList:
-            slope_1 = (x2 - x1) / (y2 - y1)
-            slope_2 = (x3 - x1) / (y3 - y1)
+            try:
+                slope_1 = (x2 - x1) / (y2 - y1)
+                slope_2 = (x3 - x1) / (y3 - y1)
+            except ZeroDivisionError:
+                slope_1 = 0
+                slope_2 = 0
 
             points = []
             cur_x1 = x1

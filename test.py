@@ -18,7 +18,7 @@ from Tools.scripts.dutree import display
 
 import cv2
 import numpy as np
-import BN_Sample
+import src.sampler.BN_Sample as BN_Sample
 from PIL import Image
 import numpy as np
 # load the image
@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 # If there is a memory leak in the conversion, memory used by the program should grow to eventually overwhelm
 # the system; memory usage monitors may be used to check the behavior
 if __name__ == "__main__":
-    image = Image.open('./img/test5.jpg')
+    image = Image.open('./img/test4.jpg')
 
     # convert image to numpy array
     data = np.asarray(image)
@@ -42,12 +42,14 @@ if __name__ == "__main__":
     # plt.imshow(debug, cmap='hot', interpolation='nearest')
     # plt.show()
     # plt.show()
-    w,h,_=data.shape
-    Sampled = BN_Sample.GetPoints(data, w, h, 100.0)
-    # Sampler = BN_Sample.ImageQuasisampler()
-    # Sampler.loadImg(data,100.0)
+    # w,h,_=data.shape
+    # data = data.astype(float)
+    data = data.astype(float)
+    # Sampled = BN_Sample.GetPoints(data, 100.0)
+    Sampler = BN_Sample.ImageQuasisampler()
+    Sampler.loadImg(data,100.0)
     # Sampler.loadPGM('image.pgm', 100.0)
-    # Sampled = Sampler.getSampledPoints()
+    Sampled = Sampler.getSampledPoints()
     x = Sampled[:,0]
     y = Sampled[:,1]
     plt.scatter(x,y)

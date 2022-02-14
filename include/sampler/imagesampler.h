@@ -26,14 +26,14 @@ struct ChannelException : public std::exception
 };
 class ImageQuasisampler : public Quasisampler {
 private:
-  std::vector<unsigned> data;
+  std::vector<double> data;
   int channels, type;
   double mag;
 
 public:
   
   ImageQuasisampler();
-  ImageQuasisampler(PyObject *inputObject, double width, double height, double mag = 1.0);
+  ImageQuasisampler(PyObject *inputObject, double mag = 1.0);
     // virtual ~ImageQuasisampler();
   // Simple PGM parser (Low fault tolerance)
   bool loadImg(PyObject *inputObject, double mag = 1.0);
