@@ -48,8 +48,8 @@ if __name__ == "__main__":
     # Sampler.loadImg(data,100.0)
     # Sampler.loadPGM('image.pgm', 100.0)
     # Sampled = Sampler.getSampledPoints()
-    x = Sampled[:,1]
-    y = Sampled[:,0]
+    x = Sampled[:,0]
+    y = Sampled[:,1]
     plt.scatter(x,y)
     plt.show()
     # create Pillow image

@@ -109,10 +109,10 @@ bool ImageQuasisampler::loadImg(PyObject *inputObject, double mag) {
   }
 
 unsigned ImageQuasisampler::getImportanceAt(Point2D pt) {
-    int w = (int)pt.x;
-    int h = (int)pt.y;
-    int nw = (int)( this->width);
-    int nh = (int)(this->height);
+    int x = (int)pt.x;
+    int y = (int)pt.y;
+    int w = (int)( this->width);
+    int h = (int)(this->height);
 
   if(this->data.empty()){
     throw "No Valid Data loaded";
@@ -120,10 +120,10 @@ unsigned ImageQuasisampler::getImportanceAt(Point2D pt) {
   }
   unsigned sum = 0;
     for(int i = 0; i< this->channels; i++){
-    int index = ((nw-w)*nh + h) * this->channels + i;
+    int index = ((h-y)*w + x) * this->channels + i;
     if (index > (this->width * this->height * this->channels)){
-//      std::cout<<"outside" <<std::endl;
-        ;
+        std::cerr<<"outside" <<std::endl;
+        break;
     }
 
     sum += (this->data)[index];
