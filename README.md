@@ -14,6 +14,16 @@ $ . venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
+Build open3d (Arch only):
+```
+in 3rdparty/libjpeg-turbo/libjpeg-turbo.cmake
+replace
+$ set(JPEG_TURBO_LIB_DIR ${INSTALL_DIR}/${Open3D_INSTALL_LIB_DIR})
+with
+$ set(JPEG_TURBO_LIB_DIR ${INSTALL_DIR}/lib64)
+```
+
+
 Example path variable:
 ```
 Path=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5\extras\CUPTI\lib64\;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\;D:\Program Files\cuda\bin\;

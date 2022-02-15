@@ -1,10 +1,9 @@
 import cv2
 import sampler.BN_Sample as Sampler
-# from sampling.error_dither import ErrorDither
 from sampling.importance_map import ImportanceMap
 from sampling.triangulate import Triangulate
 from util.mesh_to_svg import SVGWriter
-
+from mesh.decimation import Decimate
 from util.settings import Settings
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -23,40 +22,28 @@ if __name__ == "__main__":
 
     # Load the input image
     print("Loading image...")
-    img = cv2.imread(settings.image)
+    image = cv2.imread(settings.image)
 
     # Perform importance map for blue-noise sampling
     print("Performing importance map...")
-    importance_map = im.run(settings, img, 0.5)
-    # print(importance_map)
-    print(importance_map.max())
-    # plt.imshow(importance_map[:,:,1], cmap='hot', interpolation='nearest')
-    # plt.axis('off')
-    # plt.savefig("test.png",bbox_inches='tight',
-    #         pad_inches=0,
-    #         format='png',
-    #         dpi=300)
-    print(importance_map.shape)
-    # Perform Floyd-Steinberg error dithering for blue-noise sampling
+    im = ImportanceMap()
+    dt = Triangulate()
+    md = Decimate()
     print("Performing error diffusion...")
-    importance_map = np.floor(importance_map)
-    bn.loadImg(importance_map, 1000.0)
+    importance_map = im.run(None, image, 0.5)
 
-    debug= bn.debugTool()
-    plt.imshow(debug, cmap='hot', interpolation='nearest')
-    plt.show()
-    sampled_points = bn.getSampledPoints()
-    print(sampled_points)
-    print(sampled_points.shape)
-    x = sampled_points[:, 0]
-    y = sampled_points[:, 1]
-    plt.scatter(x, y, marker='.', s = 10,c='green')
-    plt.show()
+    Sampler = Sampler.ImageQuasisampler()
+    Sampler.loadImg(importance_map, 1000.0)
+    # Sampler.loadPGM('image.pgm', 100.0)
+    Sampled = Sampler.getSampledPoints()
+    x = Sampled[:, 0]
+    y = Sampled[:, 1]
 
-    # Perform Delaunay triangulation
+    newpts = md.run(image, Sampled, 10)
     print("Performing triangulation...")
-    triangulated = dt.run(settings, img, sampled_points)
+    triangulated = dt.run(None, image, newpts.astype(float))
+    # Perform Floyd-Steinberg error dithering for blue-noise sampling
 
     # Convert mesh to SVG
-    sw = SVGWriter(img.shape[1], img.shape[0], 1)
+    sw = SVGWriter(image.shape[1], image.shape[0], 1)
     sw.draw_triangles(settings.output, triangulated)
