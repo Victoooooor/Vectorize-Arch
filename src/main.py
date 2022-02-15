@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     debug= bn.debugTool()
     plt.imshow(debug, cmap='hot', interpolation='nearest')
-    # plt.show()
+    plt.show()
     sampled_points = bn.getSampledPoints()
     print(sampled_points)
     print(sampled_points.shape)
