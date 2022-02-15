@@ -3,6 +3,9 @@ import cv2
 
 from util.settings import Settings
 
+
+
+
 class ImportanceMap:
     """
     First step of blue-noise sampling, based on Zhao et al.
@@ -39,7 +42,7 @@ class ImportanceMap:
         importance = (x / pix_max) ** power
         return importance * 255
 
-    def run(self, settings: Settings, img: np.ndarray) -> np.ndarray:
+    def run(self, settings: Settings, img: np.ndarray, gamma: float = 0.1) -> np.ndarray:
         """
         Blue-noise sampling driver
         """
@@ -54,7 +57,7 @@ class ImportanceMap:
         image_max = np.maximum.reduce(filtered_images)
 
         # Return importance map
-        return self._get_importance(image_max, 0.01)
+        return self._get_importance(image_max, gamma)
 
     def run_and_export(self, settings: Settings, img: np.ndarray) -> np.ndarray:
         """

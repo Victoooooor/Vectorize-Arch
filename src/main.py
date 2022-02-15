@@ -1,6 +1,6 @@
 import cv2
 import sampler.BN_Sample as Sampler
-from sampling.error_dither import ErrorDither
+# from sampling.error_dither import ErrorDither
 from sampling.importance_map import ImportanceMap
 from sampling.triangulate import Triangulate
 from util.mesh_to_svg import SVGWriter
@@ -9,12 +9,15 @@ from util.settings import Settings
 import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
+import sys
+
+sys.path.append('..')
 if __name__ == "__main__":
     settings = Settings()
     settings.print()
 
     im = ImportanceMap()
-    ed = ErrorDither()
+    # ed = ErrorDither()
     dt = Triangulate()
     bn = Sampler.ImageQuasisampler()
 
@@ -24,7 +27,7 @@ if __name__ == "__main__":
 
     # Perform importance map for blue-noise sampling
     print("Performing importance map...")
-    importance_map = im.run(settings, img)
+    importance_map = im.run(settings, img, 0.5)
     # print(importance_map)
     print(importance_map.max())
     # plt.imshow(importance_map[:,:,1], cmap='hot', interpolation='nearest')
@@ -47,7 +50,7 @@ if __name__ == "__main__":
     print(sampled_points.shape)
     x = sampled_points[:, 0]
     y = sampled_points[:, 1]
-    plt.scatter(y, x, marker='.', s = 1,c='red')
+    plt.scatter(x, y, marker='.', s = 10,c='green')
     plt.show()
 
     # Perform Delaunay triangulation

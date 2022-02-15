@@ -18,23 +18,29 @@ from Tools.scripts.dutree import display
 
 import cv2
 import numpy as np
-import src.sampler.BN_Sample as BN_Sample
+import sampler.BN_Sample as BN_Sample
 from PIL import Image
 import numpy as np
 # load the image
 import matplotlib.pyplot as plt
-
+from sampling.importance_map import ImportanceMap
+from util.settings import Settings
 # Used to test the code for memory leaks: requires an OpenCV-compatible webcam to be connected to the system
 # If there is a memory leak in the conversion, memory used by the program should grow to eventually overwhelm
 # the system; memory usage monitors may be used to check the behavior
 if __name__ == "__main__":
-    image = Image.open('./img/test3.jpg')
+
+    # image = Image.open('./img/test6.jpg')
+    image = cv2.imread('../img/test6.jpg')
     # image = Image.open('test.png')
     # convert image to numpy array
-    data = np.asarray(image)
-    print(data.shape)
-    #
+    # data = np.asarray(image)
+    data = image
+    print(type(cv2.imread('./img/test6.jpg')))
+    # print(data.shape)
 
+    im = ImportanceMap()
+    importance_map = im.run(None, data)
     # # print(" ")
     #
     # debug = Sampler.debugTool()
@@ -44,17 +50,17 @@ if __name__ == "__main__":
     # plt.show()
     # w,h,_=data.shape
     # data = data.astype(float)
-    data = data.astype(float)
-    print(data.shape)
+    # data = data.astype(float)
+    print(importance_map.shape)
     # Sampled = BN_Sample.GetPoints(data, 100.0)
     Sampler = BN_Sample.ImageQuasisampler()
-    Sampler.loadImg(data[:,:,:3],100.0)
+    Sampler.loadImg(importance_map,1000.0)
     debug = Sampler.debugTool()
     plt.imshow(debug, cmap='hot', interpolation='nearest')
     # Sampler.loadPGM('image.pgm', 100.0)
     Sampled = Sampler.getSampledPoints()
-    x = Sampled[:,1]
-    y = Sampled[:,0]
+    x = Sampled[:,0]
+    y = Sampled[:,1]
     plt.scatter(x,y)
     plt.show()
     # create Pillow image
