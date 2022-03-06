@@ -57,7 +57,7 @@ class ImportanceMap:
         # Return importance map
         return self._get_importance(image_max, gamma)
 
-    def run_and_export(self, settings: Settings, img: np.ndarray) -> np.ndarray:
+    def run_and_export(self, settings: Settings, img: np.ndarray, gamma: float = 0.1) -> np.ndarray:
         """
         Same as run(), but also saves result to file.
         """
