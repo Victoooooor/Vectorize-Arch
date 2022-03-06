@@ -4,8 +4,6 @@ import cv2
 from util.settings import Settings
 
 
-
-
 class ImportanceMap:
     """
     First step of blue-noise sampling, based on Zhao et al.
@@ -44,7 +42,7 @@ class ImportanceMap:
 
     def run(self, settings: Settings, img: np.ndarray, gamma: float = 0.1) -> np.ndarray:
         """
-        Blue-noise sampling driver
+        Blue-noise sampling driver.
         """
 
         # Apply each filter to the image
