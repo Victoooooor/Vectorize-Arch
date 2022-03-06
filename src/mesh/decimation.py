@@ -7,7 +7,7 @@ class Decimate:
     def __init__(self):
         None
 
-    def run(self, image:np.ndarray, vertices:PointList, shrink = 20) -> PointList:
+    def run(self, image: np.ndarray, vertices: PointList, shrink = 20) -> PointList:
         rect = (0, 0, image.shape[1], image.shape[0])
         subdiv = cv2.Subdiv2D(rect)
 
@@ -39,17 +39,17 @@ class Decimate:
         mesh.vertices = o3d.utility.Vector3dVector(pr)
         mesh.triangles = o3d.utility.Vector3iVector(tri_ind)
 
-        newmesh = mesh.simplify_quadric_decimation(len // shrink)
-        vets = np.asarray(newmesh.vertices)
+        new_mesh = mesh.simplify_quadric_decimation(len // shrink)
+        vets = np.asarray(new_mesh.vertices)
         vets = vets[:, :2].astype(int)
-        tri = np.asarray(newmesh.triangles)
+        tri = np.asarray(new_mesh.triangles)
 
-        pixmap = np.full_like(image[:, :, 0], 0)
+        pix_map = np.full_like(image[:, :, 0], 0)
         for t in tri.flatten():
             x = vets[t][0]
             y = vets[t][1]
-            pixmap[y - 1][x - 1] = 1
+            pix_map[y - 1][x - 1] = 1
 
-        newpts = np.array(np.where(pixmap == 1)).T
-        newpts[:, [0, 1]] = newpts[:, [1, 0]]
-        return newpts
+        new_pts = np.array(np.where(pix_map == 1)).T
+        new_pts[:, [0, 1]] = new_pts[:, [1, 0]]
+        return new_pts
