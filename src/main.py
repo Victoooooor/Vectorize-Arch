@@ -3,6 +3,7 @@ import sampler.BN_Sample as Sampler
 from sampling.importance_map import ImportanceMap
 from sampling.triangulate import Triangulate
 from tracer.color_quant import ColorQuantization
+from tracer.path_analysis import PathAnalyzer
 from util.mesh_to_svg import SVGWriter
 from mesh.decimation import Decimate
 from util.settings import Settings
@@ -33,6 +34,11 @@ if __name__ == "__main__":
     # Load the input image
     print("Loading image...")
     image = cv2.imread(settings.image)
+
+    # # TESTING PATH PARSING
+    # # pa = PathAnalyzer()
+    # # pa.run(settings)
+    # # sys.exit(0)
 
     # # TESTING COLOR QUANTIZATION
     # k = 4
