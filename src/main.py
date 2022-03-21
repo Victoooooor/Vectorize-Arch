@@ -43,10 +43,10 @@ if __name__ == "__main__":
     # sys.exit(0)
 
     # # TESTING COLOR QUANTIZATION
-    # k = 4
-    # print(f"Color quantization with k={k}")
-    # cq = ColorQuantization()
-    # cq.run_and_export(settings, image, k)
+    k = 4
+    print(f"Color quantization with k={k}")
+    cq = ColorQuantization()
+    cq.run_and_export(settings, image, k)
     # sys.exit(0)
 
     # Perform importance map for blue-noise sampling
@@ -63,9 +63,6 @@ if __name__ == "__main__":
     bn.loadImg(importance_map, 1000.0)
     # bn.loadPGM('image.pgm', 100.0)
     sampled = bn.getSampledPoints()
-    sampled = np.floor(sampled).astype(int)
-    sampled = [(x, y) for x, y in sampled.tolist()]
-    print(sampled)
 
     print("Loading sampled points into quantized map")
     # Change representation of sampled points into something that is
@@ -73,6 +70,8 @@ if __name__ == "__main__":
     h, w, _ = image.shape
     sp = SampledPoints(w, h, 32, [(x, y) for [x, y] in sampled])
     up = Unifier(w, h, sampled)
+    up.unify_with_potrace(k)
+    # sys.exit(0)
 
     # Diagnostics on SampledPoints; uncomment for diagnostics
     # Diagnostics should be turned into a `Settings` parameter
