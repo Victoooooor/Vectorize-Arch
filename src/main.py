@@ -2,6 +2,7 @@ import cv2
 import sampler.BN_Sample as Sampler
 from sampling.importance_map import ImportanceMap
 from sampling.sampled_points import SampledPoints
+from sampling.unify_points_curves import Unifier
 from sampling.triangulate import Triangulate
 from tracer.color_quant import ColorQuantization
 from tracer.path_analysis import PathAnalyzer
@@ -62,12 +63,16 @@ if __name__ == "__main__":
     bn.loadImg(importance_map, 1000.0)
     # bn.loadPGM('image.pgm', 100.0)
     sampled = bn.getSampledPoints()
+    sampled = np.floor(sampled).astype(int)
+    sampled = [(x, y) for x, y in sampled.tolist()]
+    print(sampled)
 
     print("Loading sampled points into quantized map")
     # Change representation of sampled points into something that is
     # quicker to look up.
     h, w, _ = image.shape
     sp = SampledPoints(w, h, 32, [(x, y) for [x, y] in sampled])
+    up = Unifier(w, h, sampled)
 
     # Diagnostics on SampledPoints; uncomment for diagnostics
     # Diagnostics should be turned into a `Settings` parameter
