@@ -17,6 +17,8 @@ class PathAnalyzer:
         path = paths[0]
         path_attributes = attributes[0]
 
+        print(path)
+
         # print(len(path))
         # print(path)
         # print(path_attributes)

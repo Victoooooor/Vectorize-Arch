@@ -1,6 +1,7 @@
 import cv2
 import sampler.BN_Sample as Sampler
 from sampling.importance_map import ImportanceMap
+from sampling.sampled_points import SampledPoints
 from sampling.triangulate import Triangulate
 from tracer.color_quant import ColorQuantization
 from tracer.path_analysis import PathAnalyzer
@@ -36,9 +37,9 @@ if __name__ == "__main__":
     image = cv2.imread(settings.image)
 
     # # TESTING PATH PARSING
-    # # pa = PathAnalyzer()
-    # # pa.run(settings)
-    # # sys.exit(0)
+    # pa = PathAnalyzer()
+    # pa.run(settings)
+    # sys.exit(0)
 
     # # TESTING COLOR QUANTIZATION
     # k = 4
@@ -56,10 +57,24 @@ if __name__ == "__main__":
     # print("Performing error diffusion...")
     # ed = ErrorDither()
 
+    print("Sampling points using quasisampler BNS")
     bn = Sampler.ImageQuasisampler()
     bn.loadImg(importance_map, 1000.0)
     # bn.loadPGM('image.pgm', 100.0)
     sampled = bn.getSampledPoints()
+
+    print("Loading sampled points into quantized map")
+    # Change representation of sampled points into something that is
+    # quicker to look up.
+    h, w, _ = image.shape
+    sp = SampledPoints(w, h, 32, [(x, y) for [x, y] in sampled])
+
+    # Diagnostics on SampledPoints; uncomment for diagnostics
+    # Diagnostics should be turned into a `Settings` parameter
+    # sp.to_hist()
+
+    # TODO: perform combination algorithm b/t potrace and sampled points
+    sampled = np.array(sp.to_coords())
 
     print("Performing decimation...")
     md = Decimate()
