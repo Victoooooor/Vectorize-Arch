@@ -38,6 +38,6 @@ class ColorQuantization:
             filename = f"img/out{i}"
             cv2.imwrite(f"{filename}.bmp", img_scans[i, :, :])
             sp.Popen(
-                f"potrace {filename}.bmp -o {filename}.svg -b svg".split(' '))
+                f"potrace {filename}.bmp -o {filename}.svg -b svg --color #FFFFFF".split(' '))
 
         return img

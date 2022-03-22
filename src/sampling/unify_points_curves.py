@@ -42,6 +42,7 @@ class Unifier():
             png = cairosvg.svg2png(url=f"{filename}.svg")
             img = np.array(Image.open(io.BytesIO(png)))
             potrace_curves.append(img)
+            # print(np.sum(np.sum(img, axis=-1) == 0))
             # import matplotlib.pyplot as plt
             # plt.imshow(img)
             # plt.show()
