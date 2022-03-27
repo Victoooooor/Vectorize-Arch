@@ -37,7 +37,9 @@ class ColorQuantization:
         for i in range(k):
             filename = f"img/out{i}"
             cv2.imwrite(f"{filename}.bmp", img_scans[i, :, :])
+
+            # We use --fillcolor to get rid of the alpha (transparency) dimension
             sp.Popen(
-                f"potrace {filename}.bmp -o {filename}.svg -b svg --color #FFFFFF".split(' '))
+                f"potrace {filename}.bmp -o {filename}.svg -b svg --fillcolor #FFFFFF".split(' '))
 
         return img

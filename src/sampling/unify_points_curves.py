@@ -5,6 +5,7 @@ import io
 import cairosvg
 
 from PIL import Image
+from scipy import ndimage
 
 
 class Unifier():
@@ -34,17 +35,36 @@ class Unifier():
         return list(self.arr[point[1]][point[0]])
 
     def unify_with_potrace(self, k: int) -> PointList:
+        def read_svg(filename: str) -> np.array:
+            """Return an SVG image rasterized as an greyscale numpy array."""
+            png = cairosvg.svg2png(url=f"{filename}.svg")
+            img = Image.open(io.BytesIO(png)).convert('L')  # Convert to greyscale
+            return np.array(img)
+        
+        def get_edges(img: np.array) -> np.array:
+            """Sobel edge detection from: 
+            https://stackoverflow.com/a/32301051
+            """
+            edge_horizontal = ndimage.sobel(img, 0)
+            edge_vertical = ndimage.sobel(img, 1)
+            return np.hypot(edge_horizontal, edge_vertical)
+
         # Read SVG based on:
         # https://stackoverflow.com/a/55442505
         potrace_curves = []
         for i in range(k):
             filename = f"img/out{i}"
-            png = cairosvg.svg2png(url=f"{filename}.svg")
-            img = np.array(Image.open(io.BytesIO(png)))
-            potrace_curves.append(img)
-            # print(np.sum(np.sum(img, axis=-1) == 0))
+            img = read_svg(filename)
+
+            # We need to perform edge detection because potrace returns the image in black and white areas
+            greyscale = get_edges(img)
+
+            black_pixel_ind = np.argwhere(greyscale == 255)
+            potrace_curves.append(black_pixel_ind)
+            print(len(black_pixel_ind))
             # import matplotlib.pyplot as plt
-            # plt.imshow(img)
+            # plt.imshow(greyscale)
+            # plt.scatter([x[1] for x in black_pixel_ind], [x[0] for x in black_pixel_ind], s=1)
             # plt.show()
 
     def is_valid_point(self, point: Point) -> bool:
