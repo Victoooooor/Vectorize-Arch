@@ -58,19 +58,21 @@ if __name__ == "__main__":
     # print("Performing error diffusion...")
     # ed = ErrorDither()
 
-    print("Sampling points using quasisampler BNS")
+    print("Sampling points using quasisampler BNS...")
     bn = Sampler.ImageQuasisampler()
     bn.loadImg(importance_map, 1000.0)
     # bn.loadPGM('image.pgm', 100.0)
     sampled = bn.getSampledPoints()
 
-    print("Loading sampled points into quantized map")
+    print("Loading sampled points into quantized map...")
     # Change representation of sampled points into something that is
     # quicker to look up.
     h, w, _ = image.shape
     sp = SampledPoints(w, h, 32, [(x, y) for [x, y] in sampled])
+
+    print("Merging sampled points with Potrace output...")
     up = Unifier(w, h, sampled)
-    up.unify_with_potrace(k)
+    sampled = up.unify_with_potrace(k)
     # sys.exit(0)
 
     # Diagnostics on SampledPoints; uncomment for diagnostics
@@ -78,7 +80,7 @@ if __name__ == "__main__":
     # sp.to_hist()
 
     # TODO: perform combination algorithm b/t potrace and sampled points
-    sampled = np.array(sp.to_coords())
+    # sampled = np.array(sp.to_coords())
 
     print("Performing decimation...")
     md = Decimate()
