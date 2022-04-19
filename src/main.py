@@ -68,14 +68,20 @@ if __name__ == "__main__":
     md = Decimate()
     sampled = md.run(image, sampled, 10)
 
-    print("Merging sampled points with Potrace output...")
     h, w, _ = image.shape
+
+    print("Merging sampled points with Potrace output...")
     up = Unifier(w, h, sampled, 15)
     sampled = up.unify_with_potrace(k)
-    # sys.exit(0)
 
-    # TODO: perform combination algorithm b/t potrace and sampled points
-    # sampled = np.array(sp.to_coords())
+    # Generate points around the edges
+    a = np.linspace(0, w-1, 100)[:, np.newaxis]
+    b = np.linspace(0, h-1, 100)[:, np.newaxis]
+    left = a * np.array([[1, 0]])
+    right = a * np.array([[1, 0]]) + np.array([[0, h-1]])
+    top = b * np.array([[0, 1]])
+    bottom = b * np.array([[0, 1]]) + np.array([[w-1, 0]])
+    sampled = np.concatenate((sampled, left, right, top, bottom))
 
     print("Performing triangulation...")
     dt = Triangulate()
