@@ -66,7 +66,7 @@ class Unifier():
 
             # We need to perform edge detection because potrace returns the image in black and white areas
             greyscale = get_edges(img)
-            black_pixel_inds = np.argwhere(greyscale == 255)
+            black_pixel_inds = np.argwhere(greyscale > 64)
             # import matplotlib.pyplot as plt
             # plt.imshow(greyscale)
             # plt.scatter([x[1] for x in black_pixel_inds], [x[0] for x in black_pixel_inds], s=1)

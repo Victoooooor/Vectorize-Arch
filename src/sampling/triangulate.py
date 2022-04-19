@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import cv2
+import random
 from typing import Tuple
 
 from util.geometry_types import PointList, Triangle, TriangleList
@@ -21,32 +22,32 @@ class Triangulate:
             return False
         return True
 
-    # def _triangle_color(self, img: np.ndarray, t: Tuple[int, int, int, int, int, int]) -> Tuple[int, int, int]:
-    #     """Mean of three vertices colors."""
-    #     x1, y1, x2, y2, x3, y3 = t
-    #     c = img[int(y1), int(x1)]/3 \
-    #         + img[int(y2), int(x2)]/3 \
-    #         + img[int(y3), int(x3)]/3
-    #     return c[2], c[1], c[0]
+    def _triangle_color_corners(self, img: np.ndarray, t: Tuple[int, int, int, int, int, int]) -> Tuple[int, int, int]:
+        """Mean of three vertices colors."""
+        x1, y1, x2, y2, x3, y3 = t
+        c = img[int(y1), int(x1)]/3 \
+            + img[int(y2), int(x2)]/3 \
+            + img[int(y3), int(x3)]/3
+        return c[2], c[1], c[0]
 
-    # def _triangle_color(self, img: np.ndarray, t: Tuple[int, int, int, int, int, int]) -> Tuple[int, int, int]:
-    #     """Mean of randomly sampled N points."""
-    #     N = 10
-    #     h, w, _ = img.shape
-    #     x1, y1, x2, y2, x3, y3 = t
-    #     c = np.array([0, 0, 0])
-    #     v1x, v1y = x2 - x1, y2 - y1
-    #     v2x, v2y = x3 - x1, y3 - y1
-    #     for i in range(N):
-    #         u, v = random.random(), random.random()
-    #         if u + v > 1:
-    #             u = 1 - u
-    #         x = max(0, min(w-1, u * v1x + v * v2x + x1))
-    #         y = max(0, min(h-1, u * v1y + v * v2y + y1))
-    #         c += img[int(y), int(x)]
-    #     return c[2]/N, c[1]/N, c[0]/N
+    def _triangle_color_random(self, img: np.ndarray, t: Tuple[int, int, int, int, int, int]) -> Tuple[int, int, int]:
+        """Mean of randomly sampled N points."""
+        N = 10
+        h, w, _ = img.shape
+        x1, y1, x2, y2, x3, y3 = t
+        c = np.array([0, 0, 0])
+        v1x, v1y = x2 - x1, y2 - y1
+        v2x, v2y = x3 - x1, y3 - y1
+        for i in range(N):
+            u, v = random.random(), random.random()
+            if u + v > 1:
+                u = 1 - u
+            x = max(0, min(w-1, u * v1x + v * v2x + x1))
+            y = max(0, min(h-1, u * v1y + v * v2y + y1))
+            c += img[int(y), int(x)]
+        return c[2]/N, c[1]/N, c[0]/N
 
-    def _triangle_color(self, img: np.ndarray, t: Tuple[int, int, int, int, int, int]) -> Tuple[int, int, int]:
+    def _triangle_color_all(self, img: np.ndarray, t: Tuple[int, int, int, int, int, int]) -> Tuple[int, int, int]:
         """Calculate the mean of all points in the triangle. Return an RGB tuple representing the color of the triangle."""
         def plot_triangle(t):
             """Used to debug."""
@@ -174,7 +175,7 @@ class Triangulate:
         triangle color and other attributes.
         """
         x1, y1, x2, y2, x3, y3 = t
-        r, g, b = self._triangle_color(img, t)
+        r, g, b = self._triangle_color_random(img, t)
         return (x1, y1, x2, y2, x3, y3, r, g, b)
 
     def run(self, settings: Settings, img: np.ndarray, points: PointList) -> TriangleList:

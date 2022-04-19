@@ -52,7 +52,7 @@ if __name__ == "__main__":
     # Perform importance map for blue-noise sampling
     print("Performing importance map...")
     im = ImportanceMap()
-    importance_map = im.run(settings, image, 0.5)
+    importance_map = im.run(settings, image, 1)
 
     # # Perform Floyd-Steinberg error dithering for blue-noise sampling
     # print("Performing error diffusion...")
@@ -64,31 +64,22 @@ if __name__ == "__main__":
     # bn.loadPGM('image.pgm', 100.0)
     sampled = bn.getSampledPoints()
 
-    print("Loading sampled points into quantized map...")
-    # Change representation of sampled points into something that is
-    # quicker to look up.
-    h, w, _ = image.shape
-    sp = SampledPoints(w, h, 32, [(x, y) for [x, y] in sampled])
+    print("Performing decimation...")
+    md = Decimate()
+    sampled = md.run(image, sampled, 10)
 
     print("Merging sampled points with Potrace output...")
-    up = Unifier(w, h, sampled)
+    h, w, _ = image.shape
+    up = Unifier(w, h, sampled, 15)
     sampled = up.unify_with_potrace(k)
     # sys.exit(0)
-
-    # Diagnostics on SampledPoints; uncomment for diagnostics
-    # Diagnostics should be turned into a `Settings` parameter
-    # sp.to_hist()
 
     # TODO: perform combination algorithm b/t potrace and sampled points
     # sampled = np.array(sp.to_coords())
 
-    print("Performing decimation...")
-    md = Decimate()
-    new_pts = md.run(image, sampled, 10)
-
     print("Performing triangulation...")
     dt = Triangulate()
-    triangulated = dt.run(None, image, new_pts.astype(float))
+    triangulated = dt.run(None, image, sampled.astype(float))
 
     # Convert mesh to SVG
     sw = SVGWriter(image.shape[1], image.shape[0], 1)
