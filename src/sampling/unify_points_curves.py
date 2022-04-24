@@ -35,7 +35,7 @@ class Unifier():
         # Initialize with a max distance
         max_distance = np.hypot(w, h)
         self.distances = defaultdict(lambda: max_distance)
-        self.new_locations = dict()
+        self.new_locations = defaultdict(set)
 
     def get_points(self, point: Point) -> PointList:
         """Return all sampled points within eps pixels of the given point."""
@@ -83,13 +83,16 @@ class Unifier():
                     dist = np.hypot(sampled_x - x, sampled_y - y)
                     if dist < self.distances[sampled_point]:
                         self.distances[sampled_point] = dist
-                        self.new_locations[sampled_point] = ind
+                        self.new_locations[sampled_point] = {tuple(ind)}
+                    elif dist == self.distances[sampled_point]:
+                        self.new_locations[sampled_point].add(tuple(ind))
 
         # Update the locations for the sampled points
-        for sampled_point, new_point in self.new_locations.items():
+        for sampled_point, new_point_set in self.new_locations.items():
             self.sampled_points.remove(sampled_point)
-            new_x, new_y = new_point
-            self.sampled_points.add((new_y, new_x))
+            for new_point in new_point_set:
+                new_x, new_y = new_point
+                self.sampled_points.add((new_y, new_x))
 
         return np.array([list(x) for x in self.sampled_points]).astype(float)
 

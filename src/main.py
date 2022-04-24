@@ -71,7 +71,7 @@ if __name__ == "__main__":
     h, w, _ = image.shape
 
     print("Merging sampled points with Potrace output...")
-    up = Unifier(w, h, sampled, 15)
+    up = Unifier(w, h, sampled, 5)
     sampled = up.unify_with_potrace(k)
 
     # Generate points around the edges
