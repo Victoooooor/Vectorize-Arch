@@ -1,3 +1,4 @@
+from cgi import print_directory
 import cv2
 import sampler.BN_Sample as Sampler
 from sampling.importance_map import ImportanceMap
@@ -37,16 +38,11 @@ if __name__ == "__main__":
     print("Loading image...")
     image = cv2.imread(settings.image)
 
+    h, w, _ = image.shape
+
     # # TESTING PATH PARSING
     # pa = PathAnalyzer()
     # pa.run(settings)
-    # sys.exit(0)
-
-    # # TESTING COLOR QUANTIZATION
-    k = 4
-    print(f"Color quantization with k={k}")
-    cq = ColorQuantization()
-    cq.run_and_export(settings, image, k)
     # sys.exit(0)
 
     # Perform importance map for blue-noise sampling
@@ -54,24 +50,54 @@ if __name__ == "__main__":
     im = ImportanceMap()
     importance_map = im.run(settings, image, 1)
 
+    cv2.imwrite("img/im.png", importance_map)
+
     # # Perform Floyd-Steinberg error dithering for blue-noise sampling
     # print("Performing error diffusion...")
     # ed = ErrorDither()
 
     print("Sampling points using quasisampler BNS...")
     bn = Sampler.ImageQuasisampler()
-    bn.loadImg(importance_map, 1000.0)
+    bn.loadImg(importance_map, 100.0)
     # bn.loadPGM('image.pgm', 100.0)
     sampled = bn.getSampledPoints()
+
+    # TESTING AUGMENTING IMAGE WITH STRONG GRADIENT POINTS
+    # get importance map as grayscale
+    # https://stackoverflow.com/a/596243/2397327
+    importance_map_gray = np.sum(
+        np.array([0.2126, 0.7152, 0.0722]).reshape((1, 1, -1)) 
+        * importance_map, axis=-1) 
+    # threshold importance map
+    importance_map_gray = np.argwhere(importance_map_gray > 32)
+    importance_map_samples = importance_map_gray.shape[0]
+    importance_map_gray_samples_i = np.random.choice(
+        importance_map_samples,
+        size=importance_map_samples // 100,
+        replace=False)
+    importance_map_gray_samples = importance_map_gray[importance_map_gray_samples_i]
+    # switch columns
+    importance_map_gray_samples = importance_map_gray_samples[:,::-1]
+    print(f"Got {importance_map_gray_samples.shape[0]} strong gradient samples")
+
+    # Export sampled strong points
+    importance_map_gray_samples_export = np.zeros((h, w))
+    for i, j in importance_map_gray_samples:
+        importance_map_gray_samples_export[j, i] = 255
+    cv2.imwrite("img/strong_samples.png", importance_map_gray_samples_export)
 
     print("Performing decimation...")
     md = Decimate()
     sampled = md.run(image, sampled, 10)
 
-    h, w, _ = image.shape
+    # TESTING COLOR QUANTIZATION
+    k = 4
+    print(f"Color quantization with k={k}")
+    cq = ColorQuantization()
+    cq.run_and_export(settings, image, k)
 
     print("Merging sampled points with Potrace output...")
-    up = Unifier(w, h, sampled, 5)
+    up = Unifier(w, h, sampled, 20)
     sampled = up.unify_with_potrace(k)
 
     # Generate points around the edges
@@ -82,6 +108,9 @@ if __name__ == "__main__":
     top = b * np.array([[0, 1]])
     bottom = b * np.array([[0, 1]]) + np.array([[w-1, 0]])
     sampled = np.concatenate((sampled, left, right, top, bottom))
+
+    print("Concatenating with points sampled from strong gradient")
+    sampled = np.concatenate((sampled, importance_map_gray_samples))
 
     print("Performing triangulation...")
     dt = Triangulate()
