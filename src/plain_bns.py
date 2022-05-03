@@ -7,6 +7,7 @@ from sampling.importance_map import ImportanceMap
 from sampling.triangulate import Triangulate
 from util.mesh_to_svg import SVGWriter
 from util.settings import Settings
+from util.svg_to_png import PNGWriter
 
 
 if __name__ == '__main__':
@@ -36,5 +37,9 @@ if __name__ == '__main__':
     triangulated = dt.run(None, image, sampled.astype(float))
 
     # Convert mesh to SVG
-    sw = SVGWriter(image.shape[1], image.shape[0], 1)
+    sw = SVGWriter(w, h, 1)
     sw.draw_triangles(settings.output, triangulated)
+
+    # Also export to PNG
+    pw = PNGWriter(w, h)
+    pw.run(settings)

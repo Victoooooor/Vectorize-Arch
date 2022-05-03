@@ -29,7 +29,7 @@ Example path variable:
 Path=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5\extras\CUPTI\lib64\;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\;D:\Program Files\cuda\bin\;
 ```
 
-##### Run instructions
+### Run instructions
 See `src/util/settings.py` for a list of command-line arguments.
 ```
 $ python3 src/main.py -iimg/test9.jpg -oimg/vectorized.svg
@@ -63,6 +63,6 @@ $ python src/plain_bns.py -iimg/test9.jpg -oimg/bns.svg
 ![Our vectorization][our-output]
 
 [original-image]: ./img/test9.jpg
-[potrace-output]: ./img/potrace.svg
-[bns-output]: ./img/bns.svg
-[our-output]: ./img/vectorized.svg
+[potrace-output]: ./img/potrace.png
+[bns-output]: ./img/bns.png
+[our-output]: ./img/vectorized.png

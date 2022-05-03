@@ -15,6 +15,8 @@ from PIL import Image
 import numpy as np
 import sys
 
+from util.svg_to_png import PNGWriter
+
 sys.path.append('..')
 
 
@@ -119,3 +121,8 @@ if __name__ == "__main__":
     # Convert mesh to SVG
     sw = SVGWriter(image.shape[1], image.shape[0], 1)
     sw.draw_triangles(settings.output, triangulated)
+
+    # Also export to PNG (later: change this to export to SVG
+    # or PNG based on file extension)
+    pw = PNGWriter(w, h)
+    pw.run(settings)
