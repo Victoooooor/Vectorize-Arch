@@ -73,6 +73,6 @@ class ColorQuantization:
                 for child in root2:
                     root.append(child)
 
-            tree.write('img/potrace_multiscan.svg')
+            tree.write(settings.output)
 
         return img
