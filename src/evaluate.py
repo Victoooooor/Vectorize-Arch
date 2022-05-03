@@ -41,6 +41,13 @@ class EvaluationStats:
     def dump(self) -> None:
         stats_file = f'{self.output_dir}/stats.txt'
 
+        # TODO:
+        # - file sizes
+        # - number of points (for triangulation methods)
+        # - MSE error
+        # - content loss
+        # - runtime
+
         with open(stats_file, 'w') as stats_fp:
             stats_fp.write('Outputted files:')
             stats_fp.write(json.dumps(self.png_paths))
