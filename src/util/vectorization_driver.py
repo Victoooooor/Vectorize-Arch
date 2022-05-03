@@ -8,3 +8,6 @@ class VectorizationDriver:
 
     def run(self) -> None:
         raise NotImplementedError
+
+    def get_name(self) -> str:
+        raise NotImplementedError

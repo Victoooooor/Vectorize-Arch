@@ -10,10 +10,13 @@ from util.vectorization_driver import VectorizationDriver
 
 class PotraceMultiscanDriver(VectorizationDriver):
 
+    def get_name(self) -> str:
+        return 'potrace'
+
     def run(self) -> None:
         # Load the input image
         print("Loading image...")
-        image = cv2.imread(settings.image)
+        image = cv2.imread(self.settings.image)
 
         h, w, _ = image.shape
 
@@ -21,11 +24,11 @@ class PotraceMultiscanDriver(VectorizationDriver):
         k = 4
         print(f"Color quantization with k={k}")
         cq = ColorQuantization()
-        cq.run_and_export(settings, image, k, stacked=True)
+        cq.run_and_export(self.settings, image, k, stacked=True)
 
         # Also export to PNG
         pw = PNGWriter(w, h)
-        pw.run(settings)
+        pw.run(self.settings)
 
 
 if __name__ == '__main__':

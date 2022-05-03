@@ -33,12 +33,15 @@ def save_points_to_file(filename: str, x: np.ndarray, y: np.ndarray):
     fig.savefig(filename)
 
 
-class HybridVectorization(VectorizationDriver):
+class HybridDriver(VectorizationDriver):
+
+    def get_name(self) -> str:
+        return 'hybrid'
 
     def run(self) -> None:
         # Load the input image
         print("Loading image...")
-        image = cv2.imread(settings.image)
+        image = cv2.imread(self.settings.image)
 
         h, w, _ = image.shape
 
@@ -50,7 +53,7 @@ class HybridVectorization(VectorizationDriver):
         # Perform importance map for blue-noise sampling
         print("Performing importance map...")
         im = ImportanceMap()
-        importance_map = im.run(settings, image, 1)
+        importance_map = im.run(self.settings, image, 1)
 
         cv2.imwrite("img/im.png", importance_map)
 
@@ -96,7 +99,7 @@ class HybridVectorization(VectorizationDriver):
         k = 4
         print(f"Color quantization with k={k}")
         cq = ColorQuantization()
-        cq.run_and_export(settings, image, k)
+        cq.run_and_export(self.settings, image, k)
 
         print("Merging sampled points with Potrace output...")
         up = Unifier(w, h, sampled, 20)
@@ -120,16 +123,16 @@ class HybridVectorization(VectorizationDriver):
 
         # Convert mesh to SVG
         sw = SVGWriter(image.shape[1], image.shape[0], 1)
-        sw.draw_triangles(settings.output, triangulated)
+        sw.draw_triangles(self.settings.output, triangulated)
 
         # Also export to PNG (later: change this to export to SVG
         # or PNG based on file extension)
         pw = PNGWriter(w, h)
-        pw.run(settings)
+        pw.run(self.settings)
 
 
 if __name__ == "__main__":
     settings = Settings()
     settings.print()
 
-    HybridVectorization(settings).run()
+    HybridDriver(settings).run()

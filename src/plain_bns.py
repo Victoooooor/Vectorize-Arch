@@ -13,17 +13,20 @@ from util.vectorization_driver import VectorizationDriver
 
 class PlainBNSDriver(VectorizationDriver):
 
+    def get_name(self) -> str:
+        return 'bns'
+
     def run(self):
         # Load the input image
         print("Loading image...")
-        image = cv2.imread(settings.image)
+        image = cv2.imread(self.settings.image)
 
         h, w, _ = image.shape
 
         # Perform importance map for blue-noise sampling
         print("Performing importance map...")
         im = ImportanceMap()
-        importance_map = im.run(settings, image, 1)
+        importance_map = im.run(self.settings, image, 1)
 
         # Perform BNS
         print("Sampling points using quasisampler BNS...")
@@ -38,11 +41,11 @@ class PlainBNSDriver(VectorizationDriver):
 
         # Convert mesh to SVG
         sw = SVGWriter(w, h, 1)
-        sw.draw_triangles(settings.output, triangulated)
+        sw.draw_triangles(self.settings.output, triangulated)
 
         # Also export to PNG
         pw = PNGWriter(w, h)
-        pw.run(settings)
+        pw.run(self.settings)
 
 if __name__ == '__main__':
     settings = Settings()
