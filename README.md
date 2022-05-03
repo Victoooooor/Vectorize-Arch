@@ -29,25 +29,40 @@ Example path variable:
 Path=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5\extras\CUPTI\lib64\;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.5\bin\;D:\Program Files\cuda\bin\;
 ```
 
-##### NEW
+##### Run instructions
 See `src/util/settings.py` for a list of command-line arguments.
 ```
-$ python3 src/main.py -i img/lab1.jpg -o img/out2.svg
+$ python3 src/main.py -iimg/test9.jpg -oimg/vectorized.svg
 ```
 
-TODO: remove old instructions and code
+##### Comparison with other methods
+These are our own implementations of the other methods.
 
-##### Edge detector
-```
-$ make run_edge ARGS="img/emoji.png img/out.png"
-```
-
-##### Blue noise sampling
+Potrace multiscan:
 ```bash
-(venv) $ python src/sampling/sample.py -i img/test.jpg
+$ python src/potrace_multiscan.py -iimg/test9.jpg -oimg/potrace.svg
 ```
 
-##### Output to SVG
+Plain blue-noise sampling (without heuristics):
 ```bash
-(venv) $ python src/util/mesh_to_svg.py
+$ python src/plain_bns.py -iimg/test9.jpg -oimg/bns.svg
 ```
+
+### Sample outputs
+
+##### Original image
+![Original image][original-image]
+
+##### Potrace
+![Potrace vectorization][potrace-output]
+
+##### Blue-noise sampling
+![BNS vectorization][bns-output]
+
+##### Our example
+![Our vectorization][our-output]
+
+[original-image]: ./img/test9.jpg
+[potrace-output]: ./img/potrace.svg
+[bns-output]: ./img/bns.svg
+[our-output]: ./img/vectorized.svg
