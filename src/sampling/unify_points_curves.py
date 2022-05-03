@@ -81,10 +81,10 @@ class Unifier():
                     # If the current black pixel is closer than any previous black pixel, 
                     # then update the new location for the sampled point
                     dist = np.hypot(sampled_x - x, sampled_y - y)
-                    if dist < self.distances[sampled_point]:
+                    if dist < self.distances[sampled_point] - 0.1:
                         self.distances[sampled_point] = dist
                         self.new_locations[sampled_point] = {tuple(ind)}
-                    elif dist == self.distances[sampled_point]:
+                    elif np.abs(dist - self.distances[sampled_point]) < 0.1:
                         self.new_locations[sampled_point].add(tuple(ind))
 
         # Update the locations for the sampled points
