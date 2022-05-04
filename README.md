@@ -48,6 +48,11 @@ Plain blue-noise sampling (without heuristics):
 $ python src/plain_bns.py -iimg/test9.jpg -oimg/bns.svg
 ```
 
+Evaluate methods and get statistics: this will generate statistics to a timestamped folder in `./img/eval/`.
+```bash
+$ python src/evaluate.py -iimg/test9.jpg -oimg/evaluate.svg
+```
+
 ### Sample outputs
 
 ##### Original image
