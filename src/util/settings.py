@@ -27,8 +27,11 @@ class Settings:
         self.bench = settings_dict["bench"]
         self.line_color = settings_dict["linecolor"]
 
-    def print(self):
-        print("Running vectorization with parameters:")
-        print(f"\tSampling_f:\t{self.sampling_f}")
-        print(f"\tBench:\t{self.bench}")
-        print(f"\tLine color:\t{self.line_color}")
+    def print(self, fp=None):
+        pr = print if fp is None else lambda m: fp.write(m + '\n')
+
+        pr("Running vectorization with parameters:")
+        pr(f"\tInput file:\t{self.image}")
+        pr(f"\tSampling_f:\t{self.sampling_f}")
+        pr(f"\tBench:\t{self.bench}")
+        pr(f"\tLine color:\t{self.line_color}")

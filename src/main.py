@@ -1,17 +1,13 @@
-from cgi import print_directory
 import cv2
 import sampler.BN_Sample as Sampler
 from sampling.importance_map import ImportanceMap
-from sampling.sampled_points import SampledPoints
 from sampling.unify_points_curves import Unifier
 from sampling.triangulate import Triangulate
 from tracer.color_quant import ColorQuantization
-from tracer.path_analysis import PathAnalyzer
 from util.mesh_to_svg import SVGWriter
 from mesh.decimation import Decimate
 from util.settings import Settings
 import matplotlib.pyplot as plt
-from PIL import Image
 import numpy as np
 import sys
 
