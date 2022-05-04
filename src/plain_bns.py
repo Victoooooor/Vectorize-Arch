@@ -1,6 +1,7 @@
 # Basic blue-noise sampling without other heuristics
 
 import cv2
+import numpy as np
 
 import sampler.BN_Sample as Sampler
 from sampling.importance_map import ImportanceMap
@@ -33,6 +34,15 @@ class PlainBNSDriver(VectorizationDriver):
         bn = Sampler.ImageQuasisampler()
         bn.loadImg(importance_map, self.settings.importance_coef)
         sampled = bn.getSampledPoints()
+
+        # Generate points around the edges
+        a = np.linspace(0, w-1, 100)[:, np.newaxis]
+        b = np.linspace(0, h-1, 100)[:, np.newaxis]
+        left = a * np.array([[1, 0]])
+        right = a * np.array([[1, 0]]) + np.array([[0, h-1]])
+        top = b * np.array([[0, 1]])
+        bottom = b * np.array([[0, 1]]) + np.array([[w-1, 0]])
+        sampled = np.concatenate((sampled, left, right, top, bottom))
 
         # Triangulate (and color)
         print("Performing triangulation...")
