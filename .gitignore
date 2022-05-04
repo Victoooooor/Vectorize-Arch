@@ -51,3 +51,8 @@ __pycache__
 CMakeFiles/
 *Cache*
 *.cmake
+
+# Evaluation files
+# see: https://stackoverflow.com/a/19005115
+img/eval/*
+!img/eval/.gitkeep
