@@ -59,8 +59,7 @@ class HybridDriver(VectorizationDriver):
 
         print("Sampling points using quasisampler BNS...")
         bn = Sampler.ImageQuasisampler()
-        bn.loadImg(importance_map, 100.0)
-        # bn.loadPGM('image.pgm', 100.0)
+        bn.loadImg(importance_map, self.settings.importance_coef)
         sampled = bn.getSampledPoints()
 
         # TESTING AUGMENTING IMAGE WITH STRONG GRADIENT POINTS
@@ -89,17 +88,16 @@ class HybridDriver(VectorizationDriver):
 
         print("Performing decimation...")
         md = Decimate()
-        sampled = md.run(image, sampled, 10)
+        sampled = md.run(image, sampled, self.settings.decimation_coef)
 
         # TESTING COLOR QUANTIZATION
-        k = 4
-        print(f"Color quantization with k={k}")
+        print(f"Color quantization with k={self.settings.potrace_scans}")
         cq = ColorQuantization()
-        cq.run_and_export(self.settings, image, k)
+        cq.run_and_export(self.settings, image, self.settings.potrace_scans)
 
         print("Merging sampled points with Potrace output...")
-        up = Unifier(w, h, sampled, 20)
-        sampled = up.unify_with_potrace(k)
+        up = Unifier(w, h, sampled, self.settings.unifier_attraction_distance)
+        sampled = up.unify_with_potrace(self.settings.potrace_scans)
 
         # Generate points around the edges
         a = np.linspace(0, w-1, 100)[:, np.newaxis]

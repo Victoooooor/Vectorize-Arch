@@ -31,7 +31,7 @@ class PlainBNSDriver(VectorizationDriver):
         # Perform BNS
         print("Sampling points using quasisampler BNS...")
         bn = Sampler.ImageQuasisampler()
-        bn.loadImg(importance_map, 100.0)
+        bn.loadImg(importance_map, self.settings.importance_coef)
         sampled = bn.getSampledPoints()
 
         # Triangulate (and color)

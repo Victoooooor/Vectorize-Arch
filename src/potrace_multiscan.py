@@ -21,10 +21,9 @@ class PotraceMultiscanDriver(VectorizationDriver):
         h, w, _ = image.shape
 
         # Color quantization
-        k = 4
-        print(f"Color quantization with k={k}")
+        print(f"Color quantization with k={self.settings.potrace_scans}")
         cq = ColorQuantization()
-        cq.run_and_export(self.settings, image, k, stacked=True)
+        cq.run_and_export(self.settings, image, self.settings.potrace_scans, stacked=True)
 
         # Also export to PNG
         pw = PNGWriter(w, h)
